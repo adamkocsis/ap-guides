@@ -1,0 +1,1164 @@
+---
+title: "R Examples of essential statistical methods for analyses in Analytical Paleobiology"
+bibliography: 'references.bib'
+author:
+  - name: Ádám T. Kocsis 
+    orcid: 0000-0002-9028-665X
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Emma Dunne 
+    orcid: 0000-0002-4989-5904
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Wolfgang Kiessling 
+    orcid: 0000-0002-1088-2014
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Rachel Warnock 
+    orcid: 0000-0002-9151-4642
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+toc: true
+resources:
+- R-4.4.0
+format:
+  html:
+    embed-resources: true
+---
+
+# Preamble
+
+This document is intended to give an overview of the most frequently used uni- and bivariate statistics of the frequentist approach in analytical paleobiology. This list is not exhaustive by far, but the approaches mentioned here are essential for every practitioner. The entries are not meant to give an in-detail introduction to the use of the specific approaches or functions - they are mere summaries that should serve as reminders.
+
+## Table of functions
+
+You can find references to the most important functions here:
+
+| Metric/method                                                                              | function                                                |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| **I. Univariate approaches**                                                               |                                                         |
+| [Mean](#means---mean)                                                                      | `mean()`                                                |
+| [Median](#medians---median)                                                                | `median()`                                              |
+| [Percentile](#percentilesquantiles---quantile)                                             | `quantile()`                                            |
+| [Standard deviation](#standard-deviation---sd)                                             | `sd()`                                                  |
+| [Extreme values](#extreme-values-maxima-and-minima---max-min-range)                        | `min()`, `max()`, `range()`                             |
+| [Boxplots](#box-and-whisker-plots-boxplots---boxplot)                                      | `boxplot()`                                             |
+| [Histograms](#histograms---hist)                                                           | `hist()`                                                |
+| [Standard error of the mean](#standard-error-of-the-mean-sem)                              |                                                         |
+| [Standard error of proportions](#sample-proportions-and-their-standard-error)              |                                                         |
+| **II. Bivariate approaches**                                                               |                                                         |
+| [Shapiro-Wilk test](#testing-of-normality---shapiro.test)                                  | `shapiro.test()`                                        |
+| [Kolmogorov-Smirnoff test](#testing-for-a-distribution---ks.test)                          | `ks.test()`                                             |
+| [Two-sample t-test](#comparing-means-in-normal-dists---t.test)                             | `t.test()`                                              |
+| [Two-sample Wilcoxon Rank-sum test](#comparing-medians-of-non---normal-dists--wilcox.test) | `wilcox.test()`                                         |
+| [Covariance](#covariance---cov)                                                            | `cov()`                                                 |
+| [Pearson's correlation coefficient](#pearsons-correlation---cor)                           | `cor()`, `cor.test()`                                   |
+| [Spearman's correlation coefficient](#spearmans-correlation---cormethodspearman)           | `cor(method="spearman")`, `cor.test(method="spearman")` |
+| [Basic linear models](#linear-modeling---lm)                                              | `lm()`                                                  |
+
+## About the examples
+
+Most examples of statistics are demonstrated with random numbers. These are tied to a specific 'seed' with the `set.seed()` function to make them reproducible and to illustrate usual or weird cases that can result from random sampling. The point of these examples is that they can vary when they are run without the setting of the seed - so please re-run these examples repeatedly without the `set.seed()` function call. In practical analyses, you should never manipulate the seed!
+
+* * *
+
+
+# I. Univariate methods
+
+## 1. Descriptive statistics
+
+Descriptive statistics are used to characterize a distribution of values based on a sample.
+
+<br>
+
+### Means - `mean()`
+
+**What it is**: The most basic metric we use the central tendency of a distribution. The sum of the values in the sample divided by the sample size.
+
+**When to use it**: Applicable for every distribution, although if the shape of the distribution is weird, it can be highly affected by outlying values.
+
+**Returns:** A single numeric value. `NA` if the distribution contains any missing values.
+
+```{r}
+
+x <- rnorm(10, 0, 1)
+
+mean(x)
+
+```
+
+<br>
+
+### Medians - `median()`
+
+**What it is:** Another basic metric we use to assess the central tendency of a distribution. The value that is in the middle of the distribution: as many values are lower it than as many are higher.
+
+**When to use it:** Applicable for every distribution, especially useful for distributions that are weird (e.g. have long tails) and lots of outliers
+
+**Returns:** A single numeric value. `NA` if the distribution contains any missing values.
+
+```{r}
+
+x <- rnorm(10, 0, 1)
+
+median(x)
+
+```
+
+<br>
+
+### Percentiles/quantiles - `quantile()`
+
+**What it is**: Another basic metric that describes positions in distributions. Given a value between 0 and 1, eg. 0.75: which value is higher by 75% of the values in the sample? The median is the 0.5 quantile.
+
+**When to use it**: Applicable for every distribution.
+
+**Returns:** A single numeric value. `NA` if the distribution contains any missing values.
+
+```{R}
+
+set.seed(1)
+
+# 20-element sample from standard normal distribution
+
+x<- rnorm(20, 0, 1)
+
+# median
+
+median(x)
+
+quantile(x, 0.5)
+
+# 0.8 quantile
+
+quantile(x, 0.8)
+
+```
+
+<br>
+
+### Standard deviation - `sd()`
+
+**What it is**: Basic metric that describes a value's expected deviation from the sample mean. The square root of the sample's variance.
+
+**When to use it**: Applicable for every sample.
+
+**Returns**: A single numeric value. `NA` if the distribution contains any missing values.
+
+```{R}
+
+set.seed(1)
+
+# 20-element sample from standard normal distribution
+
+x<- rnorm(20, 0, 1)
+
+sd(x)
+
+```
+
+<br>
+
+### Extreme values: maxima and minima - `max()`, `min()`, `range()`
+
+**What it is:** Basic metrics that describes the extreme values in the sample: largest and the smallest.
+
+**When to use it:** Applicable for every distribution.
+
+**Returns:** A single numeric value, or two numeric values. `NA` if the distribution contains any missing values.
+
+```{R}
+
+set.seed(1)
+
+# 20-element sample from standard normal distribution
+
+x<- rnorm(20, 0, 1)
+
+min(x)
+
+max(x)
+
+range(x)
+
+```
+
+## 2. Univariate plotting
+
+<br>
+
+### Box-and-whisker plots (boxplots) - `boxplot()`
+
+**What it is:** An efficient way to visualize a distribution.
+
+**When to use it:** Showing the range of values in a distribution and its shape. Useful for 'outlier' detection at the distribution's tails. Also useful in bivariate and multivariate cases, where it offers a good visual comparison basis.
+
+**What it does:** Illustrates major points in the distribution, by default:
+
+- Solid thick line indicates the median of the distribution
+
+- The boundaries of the box indicate bottom and top quartiles (0.25 and 0.75 quantiles)
+
+- Whiskers are at +/-1.5 * IQR (interquartile range) from the median (generalized 'confidence' interval)
+
+- Points show outlier values that are beyond the whiskers
+
+**Example:**
+
+```{r}
+
+# a sample from a normal distribution
+
+sam <- rnorm(200)
+
+boxplot(sam)
+
+```
+
+**Returns:** If assigned to a variable, the coordinates of the drawn geometries are returned as a list (`$stats`), as well as the sample size (`$n`), the confidence interval (`$conf`), the outlier values (`$out`).
+
+```{r}
+
+box <- boxplot(sam)
+
+box
+
+```
+
+<br>
+
+### Histograms - `hist()`
+
+**What it is:** An efficient way to visualize a distribution.
+
+**When to use it:** Can be useful anytime, when it is useful to show the range of values in a distribution and its shape. Provides an easily identifiable image of the distribution.
+
+**What it does:** It cuts up the range of the distribution to equal, and counts the frequency of values in every one of them and displays as a bar-plot.
+
+**Example:**
+
+```{r}
+
+# a sample from a normal distribution
+
+sam <- rnorm(200)
+
+# histogram - use breaks to increase, decrease interval sizes
+
+hist(sam)
+
+# hist(sam, breaks = 100)
+
+```
+
+**Returns:** If assigned to a variable, it returns the plotted information, the breakpoints between intervals (`$breaks`), the counts of values in the intervals (`$counts`) the relative density of points (`$density`), as well as the mid points of the intervals (`mids`):
+
+```{r}
+
+histogram <- hist(sam)
+
+histogram
+
+```
+
+## 3. Estimation of metrics
+
+The metrics (statistics) above describe samples which we use to infer about population parameters. We can assess their behavior under different sampling conditions, if we create a pseudo-population (an extremely large sample) and again sample from that. For instance:
+
+```{R}
+
+set.seed(1)
+
+pop <- rnorm(1000000, 10, 100)
+
+```
+
+`pop` in this case is a very large sample, a pseudo-population of Gaussian (normal) distribution, with 1 million elements, with the mean of 10 and the standard deviation of 100. Its histogram and boxplot look like this:
+
+```{r, plot=TRUE}
+
+par(mfrow=c(1,2))
+
+hist(pop, breaks=100)
+
+boxplot(pop)
+
+```
+
+And its descriptive statistics are very close to the parameters of the actual population:
+
+```{r}
+
+mean(pop)
+
+sd(pop)
+
+```
+
+We can create a sample from this using the `sample()` function:
+
+```{R}
+
+set.seed(1)
+
+# sample with 100 elements
+
+sam <- sample(pop, 100)
+
+```
+
+The sample's mean is not the same as the mean in the (pseudo)population:
+
+```{R}
+
+mean(sam)
+
+```
+
+<br>
+
+### Standard error of the mean (SEM)
+
+**What it is:** The expected deviation of means estimated from the sample given the sample's size.
+
+**When to use it:** The method assumes a normal distribution, but behaves well with other distributions.
+
+**Returns:** A single positive real numeric value.
+
+**Example:**
+
+Let's generate a 100 element sample from our pseudopopulation.
+
+```{R}
+
+set.seed(0)
+
+# sample with 100 elements
+
+sam <- sample(pop, 100)
+
+# the mean of the sample
+
+mean(sam)
+
+```
+
+```{R}
+
+boxplot(sam)
+
+# blue line shows the population mean
+
+abline(h=mean(pop), col="blue")
+
+# red line shows the sample mean
+
+abline(h=mean(sam), col="red")
+
+```
+
+The standard error of the mean can be estimated with:
+
+```{R}
+
+# missing values need to be removed beforehand!
+
+sem <- sd(sam)/sqrt(length(sam))
+
+sem
+
+```
+
+On a plot this is typically shown with an error bar, with the SEM measured up and down from the sample mean.
+
+```{R, echo=TRUE, eval=FALSE}
+
+segments(x0=1, y0=mean(sam)-sem, x1=1, y1=mean(sam)+sem, col="red")
+
+```
+
+```{R, echo=FALSE, eval=TRUE}
+
+boxplot(sam)
+
+# blue line shows the population mean
+
+abline(h=mean(pop), col="blue")
+
+# red line shows the sample mean
+
+abline(h=mean(sam), col="red")
+
+segments(x0=1, y0=mean(sam)-sem, x1=1, y1=mean(sam)+sem, col="red")
+
+```
+
+The population mean should be within the red error bar or very close to it - actually there is only a 68% chance that these will overlap (area covered by 1 standard deviation of a Gaussian distribution). For 95% confidence 2 (1.96) standard deviations are needed.
+
+<br>
+
+### Sample proportions and their standard error
+
+**What it is:** A measurement of a category's frequency, the number of items belonging in the focal category vs. the total number of items.
+
+**When to use it:** When the frequency of a category is to be assessed, given a changing sample size.
+
+**Returns:** A single numeric value with the range between `0` and `1`.
+
+**Example:**
+
+Let's assume that for our pseudopopulation exactly 75% of the items belong in the "red", and 25% belong in the "blue" category:
+
+```{r}
+
+colpop <- c(
+
+rep("red", 1000000*0.75),
+
+rep("blue",1000000*0.25)
+
+)
+
+```
+
+The proportion of colors in the population are (after removing any missing values!):
+
+```{r}
+
+table(colpop)/length(colpop)
+
+```
+
+When sampling from this population, the proportion of the colors should approximate the true proportion, but it won't be the same:
+
+```{R}
+
+set.seed(2)
+
+# sample size
+
+n <- 100
+
+# sampling 100 elements
+
+sam <- sample(colpop, n)
+
+# calculate the proportions
+
+prop <- table(sam)/length(sam)
+
+prop
+
+# proportion of red only
+
+prop["red"]
+
+```
+
+Every time the sampling is repeated, the proportions will be different. The higher the sample size, the less the error in the estimation of the proportions.
+
+Similar to the standard error of the mean, the standard error of sample proportions (SESP) can be calculated with mathematical statistics, which can be visualized with error bars. This standard error is:
+
+$$\sqrt{\frac{p * (1-p)}{n}}$$
+
+which in R (with the example above) translates to:
+
+```{R}
+
+sesp <- sqrt(prop["red"] * (1 - prop["red"]) / length(sam))
+
+sesp
+
+```
+
+This can be visualized in a similar way:
+
+```{R}
+
+plot(NULL, NULL, ylim=c(0,1), xlim=c(1,1), ylab="Proportion", )
+
+# population proportion
+
+abline(h=0.75, col="blue")
+
+# sample proportion
+
+abline(h=prop["red"], col="red")
+
+# estimation error
+
+segments(x0=1, x1=1, y0=prop["red"]-sesp, y1=prop["red"]+sesp, col="red")
+
+```
+
+**Explore:**
+
+- Re-running the sampling with the same sample sizes!
+
+- Changing the sample size variable!
+
+- Write a for() loop to do sampling iteratively and see the distribution of the sample proportions! How frequently does this overlap the standard error?
+
+## 4. Assessing distributions
+
+Traditional frequentist approaches rely heavily on parametric statistics (statistics that involve the estimation of a distribution's parameters), which naturally start with an assumption about a distribution's family (exponential, normal, lognormal, etc...). Most parametrics statistics were developed for the Gaussian (normal) distribution.
+
+<br>
+
+### Testing of normality - `shapiro.test()`
+
+**What it is**: The Shapiro-Wilk test of normality. A hypothesis test about the sample's distribution.
+
+**When to use it:** Use it when you want to assess whether the sample can come from a normal distribution. The null hypothesis ($H_0$) is that the distribution is normal, the alternative hypothesis ($H_1$) is that the distribution is not normal.
+
+**Produces:** Test statistic $W$, which is used to look up a single numeric p-value with the range between 0 and 1.
+
+**Examples:**
+
+**Example 1)** A non-normal (exponential) distribution correctly identified as non-normal (with $\alpha = 0.05$):
+
+```{R}
+
+set.seed(1)
+
+ex <- rexp(15)
+
+# the test
+
+shapiro.test(ex)
+
+```
+
+The low p-value indicates that the null-hypothesis can be safely rejected.
+
+**Example 2)** A normal distribution correctly identified as normal (with $\alpha = 0.05$):
+
+```{R}
+
+set.seed(1)
+
+norm <- rnorm(15)
+
+# the test
+
+shapiro.test(norm)
+
+```
+
+The high p-value indicates that the null-hypothesis is very plausible, and there is no reason to reject it.
+
+<br>
+
+### Testing for a distribution - `ks.test()`
+
+**What it is:** The Kolmogorov-Smirnoff test. A hypothesis test about the sample's distribution.
+
+**When to use it:** Use it when you want to assess whether the sample can come from a distribution, which is specified with its cumulative distribution function (CDF). The null hypothesis ($H_0$) is that the distributions match, the alternative hypothesis ($H_1$) is that the distributions do not match.
+
+**Returns:** A single numeric value with the range between 0 and 1.
+
+**Example:**
+
+**Example 1)** A Normally distributed sample correctly identified as normal:
+
+```{R}
+
+set.seed(1)
+
+norm <- rnorm(15)
+
+# the test, pnorm is the CDF
+
+ks.test(norm, pnorm)
+
+```
+
+**Example 2)** Exponentially distributed sample correctly identified as exponential:
+
+```{R}
+
+set.seed(1)
+
+ex <- rexp(15)
+
+# the test, pexp is the CDF
+
+ks.test(ex, pexp)
+
+```
+
+**Example 3** A Normally distributed sample correctly identified as non-exponential:
+
+```{R}
+
+set.seed(1)
+
+norm <- rnorm(15)
+
+# the test, pnorm is the CDF
+
+ks.test(norm, pexp)
+
+```
+
+**Explore:**
+
+- Re run the random number generation without seed setting so see that low p-values are possible even with matching distributions (weird sampling)
+
+# II. Bivariate methods
+
+## 1. Bivariate plotting
+
+<br>
+
+### Box-and-whisker plots (boxplots) for multiple variables - `boxplot()`
+
+**What it is:** An efficient way to visualize multiple distributions so they are visually comparable.
+
+**When to use it:** Showing the range of values in samples and the shape of their distributions. Very useful in illustrating the mismatch between ranges and central tendencies (medians). Can be used for any number of variables, or when the samples represent a time series.
+
+**Example:**
+
+Can be used with samples in separate vectors:
+
+```{R}
+
+set.seed(1)
+
+# implementation example: different means
+
+x <- rnorm(10, 0, 1)
+
+y <- rnorm(10, 2, 2)
+
+# boxplot with two vectors
+
+boxplot(x,y, names=c("x", "y"), col=c("red", "blue"))
+
+```
+
+... or with data stored in a single data.frame (with formula notation):
+
+```{R}
+
+set.seed(1)
+
+# implementation example: different means
+
+x <- rnorm(10, 0, 1)
+
+y <- rnorm(10, 2, 2)
+
+# joint format
+
+df <- data.frame(
+
+variable= c(rep("x" ,length(x)), rep("y" ,length(y))),
+
+value=c(x,y)
+
+)
+
+df
+
+```
+
+```{R}
+
+# boxplot with two vectors
+
+boxplot(value ~ variable, data=df)
+
+```
+
+<br>
+
+### Bivariate Scatterplot
+
+- primitive example comes here.
+
+## 2. Comparing distributions
+
+<br>
+
+### Comparing means in normal dists. - `t.test()`
+
+**What it is/does:** The standard method to compare the means of two normally distributed samples is Welch's two-sample $t$-test. Compares the difference between the two means of the samples to 0. The **null hypothesis** ($H_0$) is that the TRUE difference between the means of the two distributions is effectively 0. The **alternative hypothesis** ($H_1$) is by default two-sided (`alternative="two.sided"`), which means that the difference can be greater or lesser than 0.
+
+**When to use/assumptions:** The two distributions are normally distributed. They can have different variances and sample sizes.
+
+**Returns:** The function calculates the test statistic $t$, which is looked up from a table and translated into a p-value. The lower the p-value, the higher the chance that the two means are not equal. The tradiational cut-off ($\alpha$) value for this is 0.05, but this is arbitrary.
+
+**Example:**
+
+**Example 1)** Alternative hypothesis rejected with $\alpha = 0.05$:
+
+```{R}
+
+set.seed(1)
+
+# implementation example: same means
+
+x <- rnorm(10, 0, 1)
+
+y <- rnorm(10, 0, 2)
+
+t.test(x,y)
+
+```
+
+**Example 2)** Null hypothesis rejected with $\alpha = 0.05$:
+
+```{R}
+
+set.seed(1)
+
+# implementation example: different means
+
+x <- rnorm(10, 0, 1)
+
+y <- rnorm(10, 2, 2)
+
+t.test(x,y)
+
+```
+
+**Explore:**
+
+- Increasing the sample sizes will make the p-value decrease.
+
+- Increasing the difference in the means will also decrease the p-value.
+
+<br>
+
+### Comparing medians of non-normal dists. - `wilcox.test()`
+
+**What it is/does:** The standard method to compare the medians of two samples is the Wilcoxon rank-sum test. The test compares the difference between the medians of the two the samples to 0. The **null hypothesis** ($H_0$) is that the true difference between the medians is 0. The **alternative hypothesis** ($H_1$) is by default two-sided (`alternative="two.sided"`), which means that the difference can be greater or lesser than 0.
+
+**When to use/assumptions:** Can be useful for any samples - typically applied to cases when the samples likely do not come from normal distributions.
+
+**Returns:** The function calculates the test statistic $t$, which is looked up from a table and translated into a p-value. The lower the p-value, the higher the chance that the two means are not equal. The traditional cut-off ($\alpha$) value for this is 0.05, but this is arbitrary.
+
+**Example:**
+
+**Example 1)** Alternative hypothesis rejected with $\alpha = 0.05$:
+
+```{R}
+
+set.seed(1)
+
+# implementation example: same medians
+
+x <- rexp(20, 2)
+
+y <- rexp(20, 2)
+
+# the actual medians
+
+median(x)
+
+median(y)
+
+# boxplot comparing the two
+
+boxplot(x,y, names=c("x","y"))
+
+```
+
+Visual inspection suggests that the two distributions have somewhat different, but similar medians. The Wilcoxon rank-sum test suggests that the difference is not statistically significant.
+
+```{R}
+
+wilcox.test(x,y)
+
+```
+
+**Example 2)** Null hypothesis rejected with $\alpha = 0.05$:
+
+```{R}
+
+set.seed(1)
+
+# implementation example: different medians
+
+x <- rexp(20, 2)
+
+y <- rnorm(20, 2, 2)
+
+# the actual medians
+
+median(x)
+
+median(y)
+
+# boxplot comparing the two
+
+boxplot(x,y, names=c("x","y"))
+
+```
+
+Visual inspection suggests that the two distributions have different medians. The Wilcoxon rank-sum test is used to confirm that the difference is statistically significant.
+
+```{R}
+
+wilcox.test(x,y)
+
+```
+
+<br>
+
+### Comparison with Resampling (Bootstrapping)
+
+## 3. Correlations
+
+<br>
+
+### Covariance - `cov()`
+
+**What it is:** The covariance of two variables, a measurement of variance shared by the two variables.
+
+**Range and meaning:** A single real value. Positive values indicate that `y` tends to be higher if `x` is higher.
+
+**When to use/assumptions:** Can be used in any bivariate cases, but it in practice it is more informative to use another metric derived from the covariance: the [correlation coefficient](#pearson-s-correlation---cor).
+
+**Example:**
+
+```{r}
+
+# two samples with positive association
+
+x <- 1:100 + rnorm(100, 0, 100)
+
+y <- seq(-300, 300, length.out=length(x)) + rnorm(100, 0, 100)
+
+plot(x,y)
+
+```
+
+```{r}
+
+cov(x,y)
+
+```
+
+<br>
+
+### Pearson's correlation - `cor()`
+
+**What it is:** Pearson's product-moment correlation coefficient ($R$). The covariance between the two variables normalized by the standard deviations of the two variables.
+
+**Range and meaning:** A value between -1 and +1. The farther the value is from 0, the more linear the relationship is between the two variables. Positive values indicate that `y` tends to be higher if `x` is higher. A correlation coefficient of 0 (visualized with a round point cloud) indicates that the values are uncorrelated. Its square is the coefficient of determination ($R^2$) which describes the percentage of variance in one variable explained by the other.
+
+**When to use/assumptions:** Can be useful for any two variables, but it is Sensitive to outliers - if these are an issue, use Spearman's rank-order correlation coefficient instead (`method="spearman"`). The function `cor.test()` (below) calculates this metrics with tests and is therefore more recommended.
+
+::: {.callout-tip title="Hints"}
+
+When assessing correlations, always report:
+
+1. The kind of correlation (e.g. Pearson's, Spearman's)
+
+2. The estimate of the correlation coefficient (aka. **effect size**)
+
+3. And the p-value **...but never report 'naked' p-values!**
+
+:::
+
+**Examples:**
+
+Here are two variables x and y that are made to be correlated. These variables have a high number of elements - enough to make them a virtually a statistics population:
+
+```{r}
+
+# two correlating variables - make-belief population
+
+x <- 1:10000 + rnorm(10000, 0, 1000)
+
+y <- seq(-300, 100, length.out=length(x)) + rnorm(10000, 0, 100)
+
+# show relationship with a scatterplot
+
+plot(x, y)
+
+# correlation test
+
+cor(x, y)
+
+```
+
+::: {.callout-warning}
+
+## Important!
+
+1. Correlation is not the same as causation. Just because two variables are correlated, it does not mean that there is any relationship between them!
+
+2. A lack of correlation ($R = 0$) does not mean statistical independence!
+
+:::
+
+Consider this example:
+
+```{r, fig.width=7, fig.height=7}
+
+# points
+
+angles <- seq(-2*pi, 2*pi, length.out=100)
+
+x <- cos(angles)
+
+y <- sin(angles)
+
+# plot
+
+plot(x,y)
+
+cor(x,y)
+
+```
+
+The correlation between these samples is 0, but they are perfectly dependent on each other!
+
+<br>
+
+### Spearman's correlation - `cor(method="spearman")`
+
+**What it is:** The Spearman's rank-order correlation coefficient ($\rho$). The variables are transformed into ranks, which are then used to calculate Pearson's correlation coefficient.
+
+**Range and meaning:** The same as for Pearson's correlation coefficient, however applied for the ranks.
+
+**When to use/assumptions:** Can be useful for any two variables, particularly indicated for non-normal cases, where outliers can have a huge effect on the shape of the distributions.
+
+**Examples:**
+
+Consider the following sample:
+
+```{r}
+
+set.seed(0)
+
+x<- rnorm(20, 0, 1)
+
+y<- rnorm(20, 0, 1)
+
+plot(x,y)
+
+# pearson's correlation
+
+cor(x,y)
+
+```
+
+Because real data are rarely this clean, let's assume that we have an outlier value, which massively distorts the shape of this point cloud:
+
+```{r}
+
+# add two outliers to these samples
+
+x<- c(x, 5)
+
+y <- c(y, 10)
+
+# plot
+
+plot(x,y)
+
+```
+
+Pearson's correlation will be hugely influenced by this outlier indicating a very linear shape for the point cloud:
+
+```{r}
+
+cor(x,y)
+
+```
+
+The effect of such outliers can be dampened with Spearman's correlation:
+
+```{r}
+
+cor(x,y, method="spearman")
+
+```
+
+This value indicates a much smaller correlation, that also more realistically reflects the relationship between the two variables. Note that this this is effectively doing the following:
+
+```{r}
+
+# Pearson's correlation between ranks
+
+xRank <- rank(x)
+
+yRank <- rank(y)
+
+# Pearson's correlation between ranks
+
+cor(xRank, yRank)
+
+```
+
+**Explore:**
+
+- The difference between the Pearson correlation and Spearman correlation with differently distributed samples.
+
+- The effect of outliers (number and their distance) from the point cloud.
+
+<br>
+
+### Correlation testing - `cor.test()`
+
+**What it is:** Calculation of the sample's correlation coefficient (as above with `cor()`) **and** a statistical test on its difference from 0. The function is implemented for both the [Pearson's](#pearsons-correlation---cor), and [Spearman's correlation coefficient](#spearmans-correlation---cormethodspearman) (`cor.test(method="spearman')`). The null hypothesis ($H_0$) is that based on the sample, the true correlation coefficient of the population is 0. The alternative hypothesis is that the true correlation of the population is different from 0, i.e. the two variables are correlated.
+
+**When to use/assumptions:** For the test on [Pearson's](#pearsons-correlation---cor) the original definition of the method requires that the two variables be normally distributed. If this cannot be assumed, then it is recommended to do the testing with Spearman's correlation coefficient.
+
+**Examples:**
+
+When we sample from a population the observed correlation coefficient will be subject to variation due to random sampling. If the sample size is low enough, it is possible not to see the correlation, even if it is really there in the population - and vice versa. The examples are worked out here for Pearson's correlation, but they work exactly the same with Spearman's correlation.
+
+**Example 1)** True correlation is 0. Correlation test on the sample's correlation suggest that the this is the case.
+
+```{r}
+
+set.seed(1)
+
+# two independent variables (pseudopopulation)
+
+x <- rnorm(1000, 0, 100)
+
+y <- rnorm(1000, 0, 100)
+
+plot(x,y)
+
+```
+
+When taking a small sample from the population, is is likely that we can see some correlation in the sample:
+
+```{r}
+
+set.seed(5)
+
+# small sample from the population
+
+n <- 10
+
+# actual sampling
+
+index <- sample(1:length(x), 10, replace=FALSE)
+
+x_sampled <- x[index]
+
+y_sampled <- y[index]
+
+# Plotting the sample
+
+plot(x_sampled, y_sampled)
+
+# correlation test
+
+cor.test(x_sampled, y_sampled)
+
+```
+
+In this case the sample's correlation coefficient is 0.45. However, the p-value of the test indicates that there is a quite high, which means that there is a high chance that the population's true correlation is actually 0.
+
+**Example 2)** True correlation is not 0. Correlation test on the sample's correlation suggest that the this is the case.
+
+```{r}
+
+set.seed(1)
+
+# two correlating variables - pseudopopulation
+
+x <- 1:10000 + rnorm(10000, 0, 1000)
+
+y <- seq(-300, 100, length.out=length(x)) + rnorm(10000, 0, 100)
+
+# show relationship with a scatterplot
+
+plot(x, y)
+
+# correlation with
+
+cor(x, y)
+
+```
+
+This is a quite prominent correlation between our two variables. What happens if we take a sample from it?
+
+```{r}
+
+set.seed(1)
+
+# small sample from the population
+
+n <- 10
+
+# actual sampling
+
+index <- sample(1:length(x), 10, replace=FALSE)
+
+x_sampled <- x[index]
+
+y_sampled <- y[index]
+
+# Plotting it in the sample
+
+plot(x_sampled, y_sampled)
+
+cor.test(x_sampled, y_sampled)
+
+```
+
+With `cor.test()` we get an estimate of the population's correlation based on the sample's correlation. We also get a test result, p-value = 0.013. Given the traditional $alpha$ value (95% confidence), our test suggests that the chance that this sample comes from a population where the two variables are not correlated is very small. It is safe to reject the null hypothesis that the two variables are not correlated.
+
+**Example 3)** An unlikely, special case: true correlation is 0, but there is small chance that the correlation test on the sample's correlation suggest that there is a true correlation.
+
+```{r}
+
+set.seed(1)
+
+# two independent
+
+x <- rnorm(1000, 0, 100)
+
+y <- rnorm(1000, 0, 100)
+
+plot(x,y)
+
+```
+
+When taking a small sample from the population, is is likely that we can see some correlation in the sample:
+
+```{r}
+
+set.seed(50)
+
+# small sample from the population
+
+n <- 10
+
+index <- sample(1:length(x), 10, replace=FALSE)
+
+x_sampled <- x[index]
+
+y_sampled <- y[index]
+
+# Plotting it in the sample
+
+plot(x_sampled, y_sampled)
+
+cor.test(x_sampled, y_sampled)
+
+```
+
+In this special case, the correlation test suggests that the correlation of the sample might be real. Because of the nature of frequentist statistics, such 'false positives' are expected to be present but they are expected to occur infrequently.
+
+## 4. Linear modeling - `lm()`
+
+Everything about simple linear modeling
+
+# References
+
+::: {#refs}
+
+:::
+
+

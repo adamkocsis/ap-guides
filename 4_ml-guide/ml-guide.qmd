@@ -1,0 +1,78 @@
+---
+title: "Examples of essential machine-learning and multivariate methods in R for Analytical Paleobiology"
+bibliography: 'references.bib'
+author:
+  - name: Ádám T. Kocsis 
+    orcid: 0000-0002-9028-665X
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+toc: true
+resources:
+- R-4.4.0
+format:
+  html:
+    embed-resources: true
+---
+
+* * * 
+
+# Supervised ML - Regression methods and model selection
+
+## OLS regression - `lm()`
+
+## Multiple OLS regressions
+
+### Multiple OLS Linear Model
+
+### Polynomial regressions
+
+### Model selection principles - `AIC()`, `step()`
+
+## Generalized linear modeling - `glm()`
+
+### Logistic modeling - `glm()`
+
+### Multiple Generalized Linear Model
+
+## Generalized additive modeling  
+
+## Mixed effects modeling  
+
+* * * 
+
+# Supervised ML - Regression trees 
+
+* * * 
+
+# Supervised ML - Classification 
+
+* * *
+
+# Supervised ML - Neural Networks 
+
+## Linear Discriminant Analysis
+
+
+* * * 
+
+# V. Ordination and factor analysis 
+
+## Principal Component Analysis (PCA)  
+
+## Principal Coordinate Analysis / Metric Multidimensional Scaling (PCoA, MDS)
+
+## Non-Metric Multidimensional Scaling (NMDS)
+
+## Correspondence Analysis (CA)
+
+## De-trended Correspondence Analysis (DCA)
+
+* * * 
+
+# VI. Cluster Analysis
+
+## k-means clustering 
+
+## Hierarchical Clustering
+
+## DBSCAN 

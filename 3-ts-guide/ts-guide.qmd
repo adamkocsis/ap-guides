@@ -1,0 +1,29 @@
+---
+title: "R Examples of essential statistical methods for time series analyses"
+bibliography: 'references.bib'
+author:
+  - name: Ádám T. Kocsis 
+    orcid: 0000-0002-9028-665X
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+toc: true
+resources:
+- R-4.4.0
+format:
+  html:
+    embed-resources: true
+---
+
+# III. Time series essentials
+
+## Log return 
+
+## Spectral Analysis 
+
+## Autocorrelation
+
+## Differencing the data
+
+#### First differencing
+
+#### Generalized differencing
