@@ -1,0 +1,76 @@
+---
+title: "Examples of essential multivariate ordination methods in R for Analytical Paleobiology"
+bibliography: 'references.bib'
+author:
+  - name: Emma Dunne 
+    orcid: 0000-0002-4989-5904
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Wolfgang Kiessling 
+    orcid: 0000-0002-1088-2014
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Ádám T. Kocsis 
+    orcid: 0000-0002-9028-665X
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+  - name: Rachel Warnock 
+    orcid: 0000-0002-9151-4642
+    affiliations:
+      - name: GeoZentrum Nordbayern, Friedrich-Alexander-Universität Erlangen-Nürnberg, Loewenichstr. 28, D-91054, Erlangen, Germany
+toc: true
+resources:
+- R-4.4.0
+format:
+  html:
+    embed-resources: true
+---
+# Preamble
+
+This document is intended to give an overview of the most frequently used multivariate methods in analytical paleobiology. This list is not exhaustive by far, but the approaches mentioned here are essential for every practitioner. The entries are not meant to give an in-detail introduction to the use of the specific approaches or functions - they are mere summaries that should serve as reminders.
+
+## Table of functions
+
+You can find references to the most important functions here:
+
+# Ordination/factor analysis
+
+## Principal Component Analysis (PCA) 
+
+Some text
+
+## Principal Coordinate Analysis / Metric Multidimensional Scaling (PCoA, MDS)
+
+Some text
+
+## Non-Metric Multidimensional Scaling (NMDS)
+
+Some text
+
+## Correspondence Analysis (CA)
+
+Some text
+
+## De-trended Correspondence Analysis (DCA)
+
+Some text
+
+# Unsupervised machine learning
+
+## k-means clustering
+
+Some text
+
+## Hierarchical Clustering
+
+Some text
+
+## DBSCAN clustering
+
+Some text
+
+# References
+
+::: {#refs}
+
+:::
