@@ -25,6 +25,7 @@ format:
   html:
     embed-resources: true
 ---
+
 # Preamble
 
 This document is intended to give an overview of the most frequently used multivariate methods in analytical paleobiology. This list is not exhaustive by far, but the approaches mentioned here are essential for every practitioner. The entries are not meant to give an in-detail introduction to the use of the specific approaches or functions - they are mere summaries that should serve as reminders.
@@ -37,7 +38,23 @@ You can find references to the most important functions here:
 
 ## Principal Component Analysis (PCA) 
 
-Some text
+**Dependency:**
+
+**What it is:**
+
+**When to use it:**
+
+**Returns:**
+
+**Examples:**
+
+```{r}
+
+x <- rnorm(10, 0, 1)
+
+median(x)
+
+```
 
 ## Principal Coordinate Analysis / Metric Multidimensional Scaling (PCoA, MDS)
 
